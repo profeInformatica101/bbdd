@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tabla Comparativa de Formas Normales</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { padding: 2rem; background-color: #f8f9fa; }
+    h1, h2 { margin-top: 1.5rem; }
+    table { font-size: 0.95rem; }
+    th { background-color: #0d6efd; color: white; text-align: center; }
+    td, th { vertical-align: middle; }
+    pre { background-color: #e9ecef; padding: 1rem; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="text-center">Tabla Comparativa de Formas Normales</h1>
+    <!-- [Tablas comparativas conservadas aquí sin cambio] -->
+
+    <h2 class="mt-5">Ejemplo Completo de Normalización (1FN a 5FN)</h2>
+    <p>Ejemplo: Una universidad registra cursos, alumnos, profesores y certificaciones.</p>
+    <h3>Tabla Original (No normalizada)</h3>
+    <pre>
+Curso_ID | Curso         | Alumno         | Email              | Profesor      | Certificaciones
+---------|---------------|----------------|---------------------|---------------|-------------------------
+C1       | Bases Datos   | Ana Martínez   | ana@mail.com        | Prof. Pérez   | SQL, MongoDB
+C1       | Bases Datos   | Luis Gómez     | luis@mail.com       | Prof. Pérez   | SQL
+C2       | Redes         | Ana Martínez   | ana@mail.com        | Prof. Ruiz    | CISCO
+    </pre>
+
+    <h3>1FN: Eliminar atributos multivalor</h3>
+    <p><strong>Problema:</strong> Certificaciones tiene múltiples valores.</p>
+    <p><strong>Solución:</strong> Una fila por cada certificación.</p>
+    <pre>
+Curso_ID | Alumno         | Certificación
+---------|----------------|----------------
+C1       | Ana Martínez   | SQL
+C1       | Ana Martínez   | MongoDB
+C1       | Luis Gómez     | SQL
+C2       | Ana Martínez   | CISCO
+    </pre>
+
+    <h3>2FN: Eliminar dependencias parciales</h3>
+    <p><strong>Problema:</strong> Email depende solo del alumno, no de la clave (Curso_ID, Alumno).</p>
+    <p><strong>Solución:</strong> Separar alumnos a otra tabla.</p>
+    <pre>
+Tabla Alumnos:
+Alumno         | Email
+------------------------
+Ana Martínez   | ana@mail.com
+Luis Gómez     | luis@mail.com
+
+Tabla Curso_Alumno:
+Curso_ID | Alumno
+-------------------
+C1       | Ana Martínez
+C1       | Luis Gómez
+C2       | Ana Martínez
+    </pre>
+
+    <h3>3FN: Eliminar dependencias transitivas</h3>
+    <p><strong>Problema:</strong> Profesor depende del Curso, no directamente de la clave primaria (Curso_ID, Alumno).</p>
+    <p><strong>Solución:</strong> Crear tabla Cursos con profesor asociado.</p>
+    <pre>
+Tabla Cursos:
+Curso_ID | Curso        | Profesor
+-------------------------------
+C1       | Bases Datos  | Prof. Pérez
+C2       | Redes        | Prof. Ruiz
+    </pre>
+
+    <h3>FNBC: Claves y determinantes correctos</h3>
+    <p><strong>Problema:</strong> Si Profesor → Aula y Profesor no es clave.</p>
+    <p><strong>Solución:</strong> Mover Aula a tabla Profesor_Aula.</p>
+    <pre>
+Tabla Profesor_Aula:
+Profesor    | Aula
+-------------------
+Prof. Pérez | B1
+Prof. Ruiz  | A2
+    </pre>
+
+    <h3>4FN: Evitar combinaciones cruzadas no reales</h3>
+    <p><strong>Problema:</strong> Certificaciones y Cursos son independientes para cada alumno.</p>
+    <p><strong>Solución:</strong> Separar en dos relaciones.</p>
+    <pre>
+Alumno         | Curso_ID
+--------------------------
+Ana Martínez   | C1
+Ana Martínez   | C2
+Luis Gómez     | C1
+
+Alumno         | Certificación
+------------------------------
+Ana Martínez   | SQL
+Ana Martínez   | MongoDB
+Ana Martínez   | CISCO
+Luis Gómez     | SQL
+    </pre>
+
+    <h3>5FN: Descomposición de relaciones ternarias</h3>
+    <p><strong>Problema:</strong> Supongamos que añadimos “Campus” (Sevilla, Córdoba), donde algunos profesores enseñan cursos en distintos campus.</p>
+    <p><strong>Solución:</strong> Separar en relaciones binarias.</p>
+    <pre>
+Profesor      | Curso_ID
+------------------------
+Prof. Pérez   | C1
+Prof. Ruiz    | C2
+
+Profesor      | Campus
+----------------------
+Prof. Pérez   | Sevilla
+Prof. Pérez   | Córdoba
+
+Curso_ID      | Campus
+----------------------
+C1            | Sevilla
+C2            | Sevilla
+    </pre>
+  </div>
+</body>
+</html>
