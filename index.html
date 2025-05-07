@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tabla Comparativa de Formas Normales</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { padding: 2rem; background-color: #f8f9fa; }
+    h1, h2 { margin-top: 1.5rem; }
+    table { font-size: 0.95rem; }
+    th { background-color: #0d6efd; color: white; text-align: center; }
+    td, th { vertical-align: middle; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1><a href="ejemplo.html">Ejemplo completo</a></h1>
+    <h1 class="text-center">Tabla Comparativa de Formas Normales</h1>
+    <h2 class="mt-4">Versión Detallada</h2>
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover">
+        <thead>
+          <tr>
+            <th>Forma</th>
+            <th>Qué elimina</th>
+            <th>Acción</th>
+            <th>Ejemplo Claro</th>
+            <th>Violación Típica</th>
+            <th>Beneficio Clave</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1FN</strong></td>
+            <td>Valores no atómicos (multivalor, compuestos)</td>
+            <td>Dividir campos en filas independientes</td>
+            <td><code>Teléfonos: "555-1234, 555-5678"</code> &rarr; Dos filas</td>
+            <td>Listas en una celda</td>
+            <td>Datos elementales para operaciones SQL</td>
+          </tr>
+          <tr>
+            <td><strong>2FN</strong></td>
+            <td>Dependencias parciales</td>
+            <td>Mover atributos a tablas relacionadas</td>
+            <td><code>(ID_Alumno, Curso, Nombre)</code>, donde <code>Nombre</code> solo depende de <code>ID_Alumno</code></td>
+            <td>Repetición del nombre en cada curso</td>
+            <td>Elimina redundancia en claves compuestas</td>
+          </tr>
+          <tr>
+            <td><strong>3FN</strong></td>
+            <td>Dependencias transitivas</td>
+            <td>Crear tablas para atributos interdependientes</td>
+            <td><code>ID_Empleado → Departamento → Ciudad_Sede</code></td>
+            <td>Ciudad repetida en todos los empleados del mismo departamento</td>
+            <td>Reduce anomalías en actualizaciones</td>
+          </tr>
+          <tr>
+            <td><strong>FNBC</strong></td>
+            <td>Determinantes no superclave</td>
+            <td>Reescribir relaciones para que las claves determinen todo</td>
+            <td><code>Profesor → Aula</code> (Profesor no es clave)</td>
+            <td>Atributos determinados por no-claves</td>
+            <td>Evita inconsistencias en relaciones complejas</td>
+          </tr>
+          <tr>
+            <td><strong>4FN</strong></td>
+            <td>Dependencias multivaluadas independientes</td>
+            <td>Separar en tablas independientes</td>
+            <td><code>Empleado → {Proyectos}</code> y <code>{Certificaciones}</code></td>
+            <td>Combinaciones cruzadas artificiales</td>
+            <td>Modela relaciones independientes correctamente</td>
+          </tr>
+          <tr>
+            <td><strong>5FN</strong></td>
+            <td>Combinaciones artificiales en joins ternarios</td>
+            <td>Descomponer en relaciones binarias</td>
+            <td><code>(Proveedor, Producto, Cliente)</code> con combinaciones no reales</td>
+            <td>Suposiciones incorrectas en joins</td>
+            <td>Garantiza joins con datos válidos y precisos</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 class="mt-5">Versión Simplificada (Mnemotécnica)</h2>
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th>Forma</th>
+            <th>Regla Mnemotécnica</th>
+            <th>Ejemplo Visual</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1FN</td>
+            <td><em>"Un dato, una celda"</em></td>
+            <td>🚫 "A,B,C" &rarr; ✅ A<br>B<br>C</td>
+          </tr>
+          <tr>
+            <td>2FN</td>
+            <td><em>"Todo depende de TODA la clave"</em></td>
+            <td>🚫 (A+B) &rarr; C, A &rarr; D &rarr; ✅ Tablas separadas</td>
+          </tr>
+          <tr>
+            <td>3FN</td>
+            <td><em>"Nada depende de lo no clave"</em></td>
+            <td>🚫 A &rarr; B &rarr; C &rarr; ✅ A &rarr; B, B &rarr; C</td>
+          </tr>
+          <tr>
+            <td>FNBC</td>
+            <td><em>"Si X define Y, X debe ser clave"</em></td>
+            <td>🚫 Profesor &rarr; Aula (Profesor no es PK)</td>
+          </tr>
+          <tr>
+            <td>4FN</td>
+            <td><em>"Relaciones independientes van separadas"</em></td>
+            <td>🚫 Emp &rarr; (Proy + Cert) &rarr; ✅ Emp-Proy, Emp-Cert</td>
+          </tr>
+          <tr>
+            <td>5FN</td>
+            <td><em>"Joins deben reconstruir solo la verdad"</em></td>
+            <td>🚫 (A+B+C) con falsos datos &rarr; ✅ 3 tablas binarias</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>
